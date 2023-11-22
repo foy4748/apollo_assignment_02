@@ -15,7 +15,7 @@ export type TUserOrder = {
 	quantity: number;
 }
 
-export type TUser = {
+export interface IUser {
 	userId: string;
 	username: string;
 	password: string;
