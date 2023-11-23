@@ -102,7 +102,7 @@ const postSingleUser = async (
 const getSingleUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    const user: IUser | null = await SgetSingleUser(userId);
+    const user: IUser | boolean | null = await SgetSingleUser(userId);
     if (user) {
       const resObj: TresObj = {
         success: true,
@@ -137,14 +137,25 @@ const getSingleUser = async (req: Request, res: Response) => {
 const deleteSingleUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    const r = await SdeleteSingleUser(userId);
-    console.log(r);
-    const resObj: TresObj = {
-      success: true,
-      message: 'User deleted successfully!',
-      data: null,
-    };
-    return res.json(resObj);
+    const response = await SdeleteSingleUser(userId);
+    if (response) {
+      const resObj: TresObj = {
+        success: true,
+        message: 'User deleted successfully!',
+        data: null,
+      };
+      return res.json(resObj);
+    } else {
+      const errorObj: TerrorObj = {
+        success: false,
+        message: `User with slug ${userId} doesn't exists`,
+        error: {
+          code: 404,
+          description: `User with slug ${userId} doesn't exists`,
+        },
+      };
+      res.send(errorObj);
+    }
   } catch (error: unknown) {
     const errorObj: TerrorObj = {
       success: false,
@@ -163,14 +174,25 @@ const putSingleUser = async (req: Request, res: Response) => {
     const { userId } = req.params;
     const zodValidatedData = userValidationSchema.parse(req.body);
     const response = await SputSingleUser(userId, zodValidatedData);
-    const resObj: TresObj = {
-      success: true,
-      message: 'User updated successfully!',
-      data: response,
-    };
-    return res.json(resObj);
+    if (response) {
+      const resObj: TresObj = {
+        success: true,
+        message: 'User updated successfully!',
+        data: response,
+      };
+      return res.json(resObj);
+    } else {
+      const errorObj: TerrorObj = {
+        success: false,
+        message: `User with slug ${userId} doesn't exists`,
+        error: {
+          code: 404,
+          description: `User with slug ${userId} doesn't exists`,
+        },
+      };
+      res.send(errorObj);
+    }
   } catch (error: unknown) {
-    console.log(error);
     const errorObj: TerrorObj = {
       success: false,
       message: 'FAILED to UPDATE Single User',

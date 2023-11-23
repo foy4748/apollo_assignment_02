@@ -14,21 +14,26 @@ const SpostSingleUser = async (validatedData: IUser) => {
 };
 
 const SgetSingleUser = async (slug: string) => {
-  const singleUser: IUser | null = await UserModel.findOne(
-    {
-      userId: Number(slug),
-    },
-    // Projection
-    {
-      _id: 0,
-      __v: 0,
-      password: 0,
-      orders: 0,
-      'fullName._id': 0,
-      'address._id': 0,
-    },
-  );
-  return singleUser;
+  const isUserExists = await UserModel.isIdExists(slug);
+  if (isUserExists) {
+    const singleUser: IUser | null = await UserModel.findOne(
+      {
+        userId: Number(slug),
+      },
+      // Projection
+      {
+        _id: 0,
+        __v: 0,
+        password: 0,
+        orders: 0,
+        'fullName._id': 0,
+        'address._id': 0,
+      },
+    );
+    return singleUser;
+  } else {
+    return false;
+  }
 };
 
 const SdeleteSingleUser = async (slug: string) => {
@@ -37,7 +42,7 @@ const SdeleteSingleUser = async (slug: string) => {
     const deleteResponse = await UserModel.deleteOne({ userId: slug });
     return deleteResponse;
   } else {
-    return null;
+    return false;
   }
 };
 
@@ -57,18 +62,23 @@ const SputSingleUser = async (
     new: true,
   };
 
-  // Hashing Password on Update!
-  validatedUpdatedDoc.password = await bcrypt.hash(
-    String(validatedUpdatedDoc.password),
-    Number(config?.bcrypt_salt_rounds),
-  );
+  const isUserExists = await UserModel.isIdExists(slug);
+  if (isUserExists) {
+    // Hashing Password on Update!
+    validatedUpdatedDoc.password = await bcrypt.hash(
+      String(validatedUpdatedDoc.password),
+      Number(config?.bcrypt_salt_rounds),
+    );
 
-  const response: IUser | null = await UserModel.findOneAndUpdate(
-    { userId: Number(slug) },
-    validatedUpdatedDoc,
-    options,
-  );
-  return response;
+    const response: IUser | null = await UserModel.findOneAndUpdate(
+      { userId: Number(slug) },
+      validatedUpdatedDoc,
+      options,
+    );
+    return response;
+  } else {
+    return false;
+  }
 };
 
 export {

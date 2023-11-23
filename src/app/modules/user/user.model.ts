@@ -39,7 +39,7 @@ const userOrderSchema = new Schema<TUserOrder>({
 });
 // ----------------------------- Including Static Methods ---------------------------
 interface IUserModel extends Model<IUser> {
-  isIdExists(slug: string): Promise<boolean | null>;
+  isIdExists(slug: string): Promise<boolean | IUser | null>;
 }
 
 // User Schema
@@ -91,9 +91,8 @@ const userSchema = new Schema<IUser, IUserModel>({
 
 userSchema.statics.isIdExists = async function (slug: string) {
   const foundUser = await this.findOne({ userId: Number(slug) });
-  console.log(foundUser);
   if (foundUser) {
-    return true;
+    return foundUser;
   } else {
     return false;
   }
