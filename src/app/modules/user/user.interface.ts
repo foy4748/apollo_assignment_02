@@ -1,18 +1,23 @@
+import { ObjectId } from 'mongoose';
+
 export type TUserFullName = {
   firstName: string;
   lastName: string;
+  _id?: ObjectId;
 };
 
 export type TUserAddress = {
   street: string;
   city: string;
   country: string;
+  _id?: ObjectId;
 };
 
 export type TUserOrder = {
   productName: string;
   price: number;
   quantity: number;
+  _id?: ObjectId;
 };
 
 export interface IUser {
@@ -28,4 +33,5 @@ export interface IUser {
   address: TUserAddress;
 
   orders?: TUserOrder[];
+  _id?: ObjectId;
 }

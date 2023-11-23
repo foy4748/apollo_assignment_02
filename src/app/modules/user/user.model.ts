@@ -93,11 +93,11 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-userSchema.post('save', function (doc: Partial<IUser>, next) {
-  doc.password = undefined;
-  doc.orders = undefined;
-  next();
-});
+// userSchema.post('save', function (doc: Partial<IUser>, next) {
+//   doc.password = undefined;
+//   doc.orders = undefined;
+//   next();
+// });
 
 userSchema.pre('find', function (next) {
   this.projection({

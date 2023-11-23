@@ -57,10 +57,31 @@ const postSingleUser = async (
   try {
     const zodValidatedData = userValidationSchema.parse(req.body);
     const response = await SpostSingleUser(zodValidatedData);
+    const {
+      userId,
+      username,
+      fullName,
+      age,
+      email,
+      isActive,
+      hobbies,
+      address,
+    } = response;
+    address._id = undefined;
+    fullName._id = undefined;
     const resObj: TresObj = {
       success: true,
       message: 'User created successfully!',
-      data: response,
+      data: {
+        userId,
+        username,
+        fullName,
+        age,
+        email,
+        isActive,
+        hobbies,
+        address,
+      },
     };
     res.send(resObj);
   } catch (error: unknown) {
@@ -80,13 +101,25 @@ const postSingleUser = async (
 const getSingleUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    const user: IUser = (await SgetSingleUser(userId)) as IUser;
-    const resObj: TresObj = {
-      success: true,
-      message: 'User fetched successfully!',
-      data: user,
-    };
-    return res.json(resObj);
+    const user: IUser | null = await SgetSingleUser(userId);
+    if (user) {
+      const resObj: TresObj = {
+        success: true,
+        message: 'User fetched successfully!',
+        data: user,
+      };
+      return res.json(resObj);
+    } else {
+      const errorObj: TerrorObj = {
+        success: false,
+        message: `NO user found using provided slug: ${userId}`,
+        error: {
+          code: 404,
+          description: `NO user found using provided slug: ${userId}`,
+        },
+      };
+      return res.json(errorObj);
+    }
   } catch (error: unknown) {
     const errorObj: TerrorObj = {
       success: false,

@@ -13,11 +13,7 @@ const SpostSingleUser = async (validatedData: IUser) => {
 
 const SgetSingleUser = async (slug: string) => {
   const singleUser: IUser | null = await UserModel.findOne({ userId: slug });
-  if (singleUser) {
-    return singleUser;
-  } else {
-    return {};
-  }
+  return singleUser;
 };
 
 const SdeleteSingleUser = async (slug: string) => {
