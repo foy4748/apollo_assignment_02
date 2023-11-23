@@ -269,6 +269,15 @@ const getAllUserOrdersSum = async (
     const sum = await SgetAllUserOrdersSum(userId);
     if (typeof sum == 'boolean' && !sum) {
       res.send({ error: true });
+    } else if (Object.keys(sum).length == 0) {
+      const resObj: TresObj = {
+        success: true,
+        message: 'Total price calculated successfully!',
+        data: {
+          totalPrice: 0.0,
+        },
+      };
+      res.send(resObj);
     } else {
       const resObj: TresObj = {
         success: true,

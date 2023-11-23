@@ -118,7 +118,11 @@ const SgetAllUserOrdersSum = async (slug: string) => {
         },
       },
     ]);
-    return sum[0];
+    if (sum.length) {
+      return sum[0];
+    } else {
+      return {};
+    }
   } else {
     return false;
   }
