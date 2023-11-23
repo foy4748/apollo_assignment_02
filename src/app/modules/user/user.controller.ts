@@ -137,7 +137,8 @@ const getSingleUser = async (req: Request, res: Response) => {
 const deleteSingleUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    await SdeleteSingleUser(userId);
+    const r = await SdeleteSingleUser(userId);
+    console.log(r);
     const resObj: TresObj = {
       success: true,
       message: 'User deleted successfully!',

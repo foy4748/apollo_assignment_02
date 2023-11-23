@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { Schema, model } from 'mongoose';
+import { Model, Schema, model } from 'mongoose';
 import {
   TUserFullName,
   TUserAddress,
@@ -37,9 +37,13 @@ const userOrderSchema = new Schema<TUserOrder>({
   price: { type: Number, required: true },
   quantity: { type: Number, required: true },
 });
+// ----------------------------- Including Static Methods ---------------------------
+interface IUserModel extends Model<IUser> {
+  isIdExists(slug: string): Promise<boolean | null>;
+}
 
 // User Schema
-const userSchema = new Schema<IUser>({
+const userSchema = new Schema<IUser, IUserModel>({
   userId: {
     type: Number,
     unique: true,
@@ -83,7 +87,19 @@ const userSchema = new Schema<IUser>({
   },
 });
 
-// Defining Mongoose Middlewares
+// -----------------------------  Static Methods ---------------------------
+
+userSchema.statics.isIdExists = async function (slug: string) {
+  const foundUser = await this.findOne({ userId: Number(slug) });
+  console.log(foundUser);
+  if (foundUser) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+// ----------------------------------- Defining Mongoose Middlewares -----------------------------------
 
 // Hashing Password | During User CREATION
 userSchema.pre('save', async function (next) {
@@ -112,5 +128,5 @@ userSchema.pre('find', function (next) {
 
 // -----------------------------
 
-const User = model<IUser>('User', userSchema);
+const User = model<IUser, IUserModel>('User', userSchema);
 export default User;

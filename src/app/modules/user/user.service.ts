@@ -32,8 +32,13 @@ const SgetSingleUser = async (slug: string) => {
 };
 
 const SdeleteSingleUser = async (slug: string) => {
-  const deleteResponse = await UserModel.deleteOne({ userId: slug });
-  return deleteResponse;
+  const isIdExists = await UserModel.isIdExists(slug);
+  if (isIdExists) {
+    const deleteResponse = await UserModel.deleteOne({ userId: slug });
+    return deleteResponse;
+  } else {
+    return null;
+  }
 };
 
 const SputSingleUser = async (
