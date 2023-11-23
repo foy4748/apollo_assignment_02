@@ -94,27 +94,7 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-// Hashing Password | During User UPDATE
-// https://mongoosejs.com/docs/middleware.html#notes
-// Yep. You gotta handle this one differently
-userSchema.pre('findOneAndUpdate', async function (next) {
-  // const doc = await this.model.find(this.getQuery());
-  // console.log(doc[0]);
-  // doc[0].password = await bcrypt.hash(
-  //   doc[0].password,
-  //   Number(config?.bcrypt_salt_rounds),
-  // );
-  next();
-});
-
-// Handled this is Controller
-// Couldn't get rid of _id :)
-// userSchema.post('save', function (doc: Partial<IUser>, next) {
-//   doc.password = undefined;
-//   doc.orders = undefined;
-//   next();
-// });
-
+// Discarding Password and unnecessary fields | During User FIND
 userSchema.pre('find', function (next) {
   this.projection({
     _id: 0,
@@ -124,18 +104,6 @@ userSchema.pre('find', function (next) {
     userId: 0,
     isActive: 0,
     hobbies: 0,
-    'fullName._id': 0,
-    'address._id': 0,
-  });
-  next();
-});
-
-userSchema.pre('findOne', function (next) {
-  this.projection({
-    _id: 0,
-    __v: 0,
-    password: 0,
-    orders: 0,
     'fullName._id': 0,
     'address._id': 0,
   });
