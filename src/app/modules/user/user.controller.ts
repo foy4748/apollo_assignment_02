@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { IUser } from './user.interface';
 import {
   SgetAllUsers,
@@ -8,36 +8,72 @@ import {
 } from './user.service';
 import userValidationSchema from './user.validation';
 
-const getAllUsers = async (_: Request, res: Response) => {
+type TerrorObj = {
+  success: false;
+  message: string;
+  error: {
+    code: number;
+    description: string;
+  };
+};
+
+type TresObj = {
+  success: true;
+  message: string;
+  data: object | object[] | null;
+};
+
+const errorHandler = async (
+  error: Partial<TerrorObj>,
+  _: Request,
+  res: Response,
+  __: NextFunction,
+) => {
+  return res.send(error);
+};
+
+const getAllUsers = async (_: Request, res: Response, next: NextFunction) => {
   try {
     const users: IUser[] = await SgetAllUsers();
     res.json(users);
   } catch (error: unknown) {
-    const errorObj = {
+    const errorObj: TerrorObj = {
       success: false,
-      message: 'Something Went Wrong',
+      message: 'FAILED to GET All Users.',
+      error: {
+        code: 501,
+        description: 'FAILED to GET All Users.',
+      },
     };
-    return res.send(errorObj);
+    next(errorObj);
   }
 };
 
-const postSingleUser = async (req: Request, res: Response) => {
+const postSingleUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const zodValidatedData = userValidationSchema.parse(req.body);
     const response = await SpostSingleUser(zodValidatedData);
-    const resObj = {
+    const resObj: TresObj = {
       success: true,
       message: 'User created successfully!',
       data: response,
     };
     res.send(resObj);
-  } catch (error) {
+  } catch (error: unknown) {
     console.log(error);
-    const errorObj = {
+    const errorObj: TerrorObj = {
       success: false,
-      message: 'Something Went Wrong',
+      message: 'FAILED to POST Single User Data.',
+      error: {
+        code: 501,
+        description: 'FAILED to POST Single User Data.',
+      },
     };
-    return res.send(errorObj);
+    next(errorObj);
   }
 };
 
@@ -45,11 +81,20 @@ const getSingleUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
     const user: IUser = (await SgetSingleUser(userId)) as IUser;
-    return res.json(user);
+    const resObj: TresObj = {
+      success: true,
+      message: 'User fetched successfully!',
+      data: user,
+    };
+    return res.json(resObj);
   } catch (error: unknown) {
-    const errorObj = {
+    const errorObj: TerrorObj = {
       success: false,
-      message: 'Something Went Wrong',
+      message: 'FAILED to GET Single User Data.',
+      error: {
+        code: 501,
+        description: 'FAILED to GET Single User Data.',
+      },
     };
     res.send(errorObj);
   }
@@ -58,15 +103,30 @@ const getSingleUser = async (req: Request, res: Response) => {
 const deleteSingleUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    const user = await SdeleteSingleUser(userId);
-    return res.json(user);
+    await SdeleteSingleUser(userId);
+    const resObj: TresObj = {
+      success: true,
+      message: 'User deleted successfully!',
+      data: null,
+    };
+    return res.json(resObj);
   } catch (error: unknown) {
-    const errorObj = {
+    const errorObj: TerrorObj = {
       success: false,
-      message: 'Something Went Wrong',
+      message: 'FAILED to DELETE Single User',
+      error: {
+        code: 501,
+        description: 'FAILED to DELETE Single User Data.',
+      },
     };
     res.send(errorObj);
   }
 };
 
-export { getAllUsers, postSingleUser, getSingleUser, deleteSingleUser };
+export {
+  getAllUsers,
+  postSingleUser,
+  getSingleUser,
+  deleteSingleUser,
+  errorHandler,
+};

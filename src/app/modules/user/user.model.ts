@@ -85,12 +85,12 @@ const userSchema = new Schema<IUser>({
 
 // Defining Mongoose Middlewares
 
-userSchema.pre('save', async function (nxt) {
+userSchema.pre('save', async function (next) {
   this.password = await bcrypt.hash(
     this.password,
     parseInt(config?.bcrypt_salt_rounds ?? '10'),
   );
-  nxt();
+  next();
 });
 
 userSchema.post('save', function (doc: Partial<IUser>, next) {
@@ -108,6 +108,18 @@ userSchema.pre('find', function (next) {
     userId: 0,
     isActive: 0,
     hobbies: 0,
+    'fullName._id': 0,
+    'address._id': 0,
+  });
+  next();
+});
+
+userSchema.pre('findOne', function (next) {
+  this.projection({
+    _id: 0,
+    __v: 0,
+    password: 0,
+    orders: 0,
     'fullName._id': 0,
     'address._id': 0,
   });
