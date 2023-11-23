@@ -85,14 +85,30 @@ const userSchema = new Schema<IUser>({
 
 // Defining Mongoose Middlewares
 
+// Hashing Password | During User CREATION
 userSchema.pre('save', async function (next) {
   this.password = await bcrypt.hash(
     this.password,
-    parseInt(config?.bcrypt_salt_rounds ?? '10'),
+    Number(config?.bcrypt_salt_rounds),
   );
   next();
 });
 
+// Hashing Password | During User UPDATE
+// https://mongoosejs.com/docs/middleware.html#notes
+// Yep. You gotta handle this one differently
+userSchema.pre('findOneAndUpdate', async function (next) {
+  // const doc = await this.model.find(this.getQuery());
+  // console.log(doc[0]);
+  // doc[0].password = await bcrypt.hash(
+  //   doc[0].password,
+  //   Number(config?.bcrypt_salt_rounds),
+  // );
+  next();
+});
+
+// Handled this is Controller
+// Couldn't get rid of _id :)
 // userSchema.post('save', function (doc: Partial<IUser>, next) {
 //   doc.password = undefined;
 //   doc.orders = undefined;

@@ -5,6 +5,7 @@ import {
   SpostSingleUser,
   SgetSingleUser,
   SdeleteSingleUser,
+  SputSingleUser,
 } from './user.service';
 import userValidationSchema from './user.validation';
 
@@ -156,9 +157,35 @@ const deleteSingleUser = async (req: Request, res: Response) => {
   }
 };
 
+const putSingleUser = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const zodValidatedData = userValidationSchema.parse(req.body);
+    const response = await SputSingleUser(userId, zodValidatedData);
+    const resObj: TresObj = {
+      success: true,
+      message: 'User updated successfully!',
+      data: response,
+    };
+    return res.json(resObj);
+  } catch (error: unknown) {
+    console.log(error);
+    const errorObj: TerrorObj = {
+      success: false,
+      message: 'FAILED to UPDATE Single User',
+      error: {
+        code: 501,
+        description: 'FAILED to UPDATE Single User Data.',
+      },
+    };
+    res.send(errorObj);
+  }
+};
+
 export {
   getAllUsers,
   postSingleUser,
+  putSingleUser,
   getSingleUser,
   deleteSingleUser,
   errorHandler,
