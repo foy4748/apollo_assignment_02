@@ -81,10 +81,24 @@ const SputSingleUser = async (
   }
 };
 
+const SgetAllUserOrders = async (slug: string) => {
+  const isUserExists = await UserModel.isIdExists(slug);
+  if (isUserExists) {
+    const orders = await UserModel.findOne(
+      { userId: slug },
+      { orders: 1, _id: 0 },
+    );
+    return orders;
+  } else {
+    return false;
+  }
+};
+
 export {
   SgetAllUsers,
   SpostSingleUser,
   SgetSingleUser,
   SdeleteSingleUser,
   SputSingleUser,
+  SgetAllUserOrders,
 };

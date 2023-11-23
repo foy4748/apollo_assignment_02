@@ -92,7 +92,7 @@ const userSchema = new Schema<IUser, IUserModel>({
 userSchema.statics.isIdExists = async function (slug: string) {
   const foundUser = await this.findOne({ userId: Number(slug) });
   if (foundUser) {
-    return foundUser;
+    return true;
   } else {
     return false;
   }

@@ -6,6 +6,7 @@ import {
   SgetSingleUser,
   SdeleteSingleUser,
   SputSingleUser,
+  SgetAllUserOrders,
 } from './user.service';
 import userValidationSchema from './user.validation';
 
@@ -99,7 +100,11 @@ const postSingleUser = async (
   }
 };
 
-const getSingleUser = async (req: Request, res: Response) => {
+const getSingleUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const { userId } = req.params;
     const user: IUser | boolean | null = await SgetSingleUser(userId);
@@ -130,11 +135,15 @@ const getSingleUser = async (req: Request, res: Response) => {
         description: 'FAILED to GET Single User Data.',
       },
     };
-    res.send(errorObj);
+    next(errorObj);
   }
 };
 
-const deleteSingleUser = async (req: Request, res: Response) => {
+const deleteSingleUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const { userId } = req.params;
     const response = await SdeleteSingleUser(userId);
@@ -154,7 +163,7 @@ const deleteSingleUser = async (req: Request, res: Response) => {
           description: `User with slug ${userId} doesn't exists`,
         },
       };
-      res.send(errorObj);
+      next(errorObj);
     }
   } catch (error: unknown) {
     const errorObj: TerrorObj = {
@@ -165,11 +174,15 @@ const deleteSingleUser = async (req: Request, res: Response) => {
         description: 'FAILED to DELETE Single User Data.',
       },
     };
-    res.send(errorObj);
+    next(errorObj);
   }
 };
 
-const putSingleUser = async (req: Request, res: Response) => {
+const putSingleUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const { userId } = req.params;
     const zodValidatedData = userValidationSchema.parse(req.body);
@@ -190,7 +203,7 @@ const putSingleUser = async (req: Request, res: Response) => {
           description: `User with slug ${userId} doesn't exists`,
         },
       };
-      res.send(errorObj);
+      next(errorObj);
     }
   } catch (error: unknown) {
     const errorObj: TerrorObj = {
@@ -201,12 +214,53 @@ const putSingleUser = async (req: Request, res: Response) => {
         description: 'FAILED to UPDATE Single User Data.',
       },
     };
-    res.send(errorObj);
+    next(errorObj);
+  }
+};
+
+// Bonus Part
+const getAllUserOrders = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { userId } = req.params;
+    const orders = await SgetAllUserOrders(userId);
+    if (orders) {
+      const resObj: TresObj = {
+        success: true,
+        message: 'Order fetched successfully!',
+        data: orders,
+      };
+      return res.json(resObj);
+    } else {
+      const errorObj: TerrorObj = {
+        success: false,
+        message: `User with slug ${userId} doesn't exists`,
+        error: {
+          code: 404,
+          description: `User with slug ${userId} doesn't exists`,
+        },
+      };
+      next(errorObj);
+    }
+  } catch (error) {
+    const errorObj: TerrorObj = {
+      success: false,
+      message: 'FAILED to GET User Orders',
+      error: {
+        code: 501,
+        description: 'FAILED to GET User Orders',
+      },
+    };
+    next(errorObj);
   }
 };
 
 export {
   getAllUsers,
+  getAllUserOrders,
   postSingleUser,
   putSingleUser,
   getSingleUser,
