@@ -93,6 +93,36 @@ const SgetAllUserOrders = async (slug: string) => {
     return false;
   }
 };
+const SgetAllUserOrdersSum = async (slug: string) => {
+  const isUserExists = await UserModel.isIdExists(slug);
+  if (isUserExists) {
+    const sum = await UserModel.aggregate([
+      {
+        $match: {
+          userId: Number(slug),
+        },
+      },
+      { $unwind: '$orders' },
+      {
+        $group: {
+          _id: null,
+          totalPrice: {
+            $sum: { $multiply: ['$orders.price', '$orders.quantity'] },
+          },
+        },
+      },
+      {
+        $project: {
+          totalPrice: 1,
+          _id: 0,
+        },
+      },
+    ]);
+    return sum[0];
+  } else {
+    return false;
+  }
+};
 
 export {
   SgetAllUsers,
@@ -101,4 +131,5 @@ export {
   SdeleteSingleUser,
   SputSingleUser,
   SgetAllUserOrders,
+  SgetAllUserOrdersSum,
 };

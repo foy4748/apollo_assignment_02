@@ -7,6 +7,7 @@ import {
   SdeleteSingleUser,
   SputSingleUser,
   SgetAllUserOrders,
+  SgetAllUserOrdersSum,
 } from './user.service';
 import userValidationSchema from './user.validation';
 
@@ -218,7 +219,7 @@ const putSingleUser = async (
   }
 };
 
-// Bonus Part
+// Bonus Part ==========================================
 const getAllUserOrders = async (
   req: Request,
   res: Response,
@@ -258,9 +259,33 @@ const getAllUserOrders = async (
   }
 };
 
+const getAllUserOrdersSum = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { userId } = req.params;
+    const sum = await SgetAllUserOrdersSum(userId);
+    if (typeof sum == 'boolean' && !sum) {
+      res.send({ error: true });
+    } else {
+      const resObj: TresObj = {
+        success: true,
+        message: 'Total price calculated successfully!',
+        data: sum,
+      };
+      res.send(resObj);
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
 export {
   getAllUsers,
   getAllUserOrders,
+  getAllUserOrdersSum,
   postSingleUser,
   putSingleUser,
   getSingleUser,
