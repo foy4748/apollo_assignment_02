@@ -38,6 +38,6 @@ const userValidationSchema = z
 
     orders: z.array(userOrderValidationSchema),
   })
-  .required();
+  .partial({ orders: true });
 
 export default userValidationSchema;

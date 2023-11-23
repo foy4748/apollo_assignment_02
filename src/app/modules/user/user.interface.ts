@@ -27,5 +27,5 @@ export interface IUser {
   hobbies: string[];
   address: TUserAddress;
 
-  orders: TUserOrder[];
+  orders?: TUserOrder[];
 }

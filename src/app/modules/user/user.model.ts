@@ -80,7 +80,6 @@ const userSchema = new Schema<IUser>({
 
   orders: {
     type: [userOrderSchema],
-    required: true,
   },
 });
 
@@ -92,6 +91,12 @@ userSchema.pre('save', async function (nxt) {
     parseInt(config?.bcrypt_salt_rounds ?? '10'),
   );
   nxt();
+});
+
+userSchema.post('save', function (doc: Partial<IUser>, next) {
+  doc.password = undefined;
+  doc.orders = undefined;
+  next();
 });
 
 // -----------------------------

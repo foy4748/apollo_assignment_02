@@ -25,7 +25,12 @@ const postSingleUser = async (req: Request, res: Response) => {
   try {
     const zodValidatedData = userValidationSchema.parse(req.body);
     const response = await SpostSingleUser(zodValidatedData);
-    res.send(response);
+    const resObj = {
+      success: true,
+      message: 'User created successfully!',
+      data: response,
+    };
+    res.send(resObj);
   } catch (error) {
     console.log(error);
     const errorObj = {
@@ -39,7 +44,7 @@ const postSingleUser = async (req: Request, res: Response) => {
 const getSingleUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    const user: IUser = await SgetSingleUser(userId);
+    const user: IUser = (await SgetSingleUser(userId)) as IUser;
     return res.json(user);
   } catch (error: unknown) {
     const errorObj = {
