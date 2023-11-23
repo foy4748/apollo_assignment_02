@@ -8,8 +8,11 @@ import {
   SputSingleUser,
   SgetAllUserOrders,
   SgetAllUserOrdersSum,
+  SputSingleUserSingleOrder,
 } from './user.service';
-import userValidationSchema from './user.validation';
+import userValidationSchema, {
+  userOrderValidationSchema,
+} from './user.validation';
 
 type TerrorObj = {
   success: false;
@@ -220,6 +223,7 @@ const putSingleUser = async (
 };
 
 // Bonus Part ==========================================
+// =========== Bonus Part 2
 const getAllUserOrders = async (
   req: Request,
   res: Response,
@@ -259,6 +263,7 @@ const getAllUserOrders = async (
   }
 };
 
+// =========== Bonus Part 3
 const getAllUserOrdersSum = async (
   req: Request,
   res: Response,
@@ -287,7 +292,44 @@ const getAllUserOrdersSum = async (
       res.send(resObj);
     }
   } catch (error) {
-    next(error);
+    const errorObj: TerrorObj = {
+      success: false,
+      message: 'FAILED to CALCULATE User Order Prices',
+      error: {
+        code: 501,
+        description: 'FAILED to CALCULATE User Order Prices',
+      },
+    };
+    next(errorObj);
+  }
+};
+
+// =========== Bonus Part 1
+const putSingleUserSingleOrder = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { userId } = req.params;
+    const zodValidatedData = userOrderValidationSchema.parse(req.body);
+    await SputSingleUserSingleOrder(userId, zodValidatedData);
+    const resObj: TresObj = {
+      success: true,
+      message: 'Order created successfully!',
+      data: null,
+    };
+    res.send(resObj);
+  } catch (error) {
+    const errorObj: TerrorObj = {
+      success: false,
+      message: "FAILED to Add User's New Order",
+      error: {
+        code: 501,
+        description: "FAILED to Add User's New Order",
+      },
+    };
+    next(errorObj);
   }
 };
 
@@ -297,6 +339,7 @@ export {
   getAllUserOrdersSum,
   postSingleUser,
   putSingleUser,
+  putSingleUserSingleOrder,
   getSingleUser,
   deleteSingleUser,
   errorHandler,

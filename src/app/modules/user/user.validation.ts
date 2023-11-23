@@ -1,13 +1,13 @@
 import { z } from 'zod';
 
-const userFullNameValidationSchema = z
+export const userFullNameValidationSchema = z
   .object({
     firstName: z.string().min(1).max(20),
     lastName: z.string().min(1).max(20),
   })
   .required();
 
-const userAddressValidationSchema = z
+export const userAddressValidationSchema = z
   .object({
     street: z.string(),
     city: z.string(),
@@ -15,7 +15,7 @@ const userAddressValidationSchema = z
   })
   .required();
 
-const userOrderValidationSchema = z
+export const userOrderValidationSchema = z
   .object({
     productName: z.string(),
     price: z.number(),
@@ -23,7 +23,7 @@ const userOrderValidationSchema = z
   })
   .required();
 
-const userValidationSchema = z
+export const userValidationSchema = z
   .object({
     userId: z.number(),
     username: z.string(),

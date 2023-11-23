@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import config from '../../config/index';
-import { IUser } from './user.interface';
+import { IUser, TUserOrder } from './user.interface';
 import UserModel from './user.model';
 
 const SgetAllUsers = async () => {
@@ -128,12 +128,34 @@ const SgetAllUserOrdersSum = async (slug: string) => {
   }
 };
 
+const SputSingleUserSingleOrder = async (
+  slug: string,
+  zodValidatedData: TUserOrder,
+) => {
+  const isUserExists = await UserModel.isIdExists(slug);
+  if (isUserExists) {
+    const addedData = await UserModel.updateOne(
+      { userId: Number(slug) },
+      {
+        $addToSet: zodValidatedData,
+      },
+      {
+        new: true,
+      },
+    );
+    return addedData;
+  } else {
+    return false;
+  }
+};
+
 export {
   SgetAllUsers,
   SpostSingleUser,
   SgetSingleUser,
   SdeleteSingleUser,
   SputSingleUser,
+  SputSingleUserSingleOrder,
   SgetAllUserOrders,
   SgetAllUserOrdersSum,
 };

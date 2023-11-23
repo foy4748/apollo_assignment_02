@@ -8,6 +8,7 @@ import {
   putSingleUser,
   getAllUserOrders,
   getAllUserOrdersSum,
+  putSingleUserSingleOrder,
 } from './user.controller';
 const userRoutes = express.Router();
 
@@ -20,6 +21,7 @@ userRoutes.delete('/:userId', deleteSingleUser);
 
 // Bonuse :: Order Routes
 userRoutes.get('/:userId/orders', getAllUserOrders);
+userRoutes.put('/:userId/orders', putSingleUserSingleOrder);
 userRoutes.get('/:userId/orders/total-price', getAllUserOrdersSum);
 
 // Using Error Handling Middleware
