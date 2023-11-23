@@ -11,4 +11,16 @@ const SpostSingleUser = async (validatedData: IUser) => {
   return response;
 };
 
-export { SgetAllUsers, SpostSingleUser };
+const SgetSingleUser = async (slug: string) => {
+  const singleUser: IUser = (await UserModel.findOne({
+    userId: slug,
+  })) as IUser;
+  return singleUser;
+};
+
+const SdeleteSingleUser = async (slug: string) => {
+  const deleteResponse = await UserModel.deleteOne({ userId: slug });
+  return deleteResponse;
+};
+
+export { SgetAllUsers, SpostSingleUser, SgetSingleUser, SdeleteSingleUser };
