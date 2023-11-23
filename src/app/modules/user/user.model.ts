@@ -99,6 +99,21 @@ userSchema.post('save', function (doc: Partial<IUser>, next) {
   next();
 });
 
+userSchema.pre('find', function (next) {
+  this.projection({
+    _id: 0,
+    __v: 0,
+    password: 0,
+    orders: 0,
+    userId: 0,
+    isActive: 0,
+    hobbies: 0,
+    'fullName._id': 0,
+    'address._id': 0,
+  });
+  next();
+});
+
 // -----------------------------
 
 const User = model<IUser>('User', userSchema);
