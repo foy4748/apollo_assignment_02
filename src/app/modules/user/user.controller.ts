@@ -27,6 +27,7 @@ const postSingleUser = async (req: Request, res: Response) => {
     const response = await SpostSingleUser(zodValidatedData);
     res.send(response);
   } catch (error) {
+    console.log(error);
     const errorObj = {
       success: false,
       message: 'Something Went Wrong',

@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt';
 import { Schema, model } from 'mongoose';
 import {
   TUserFullName,
@@ -5,6 +6,7 @@ import {
   TUserOrder,
   IUser,
 } from './user.interface';
+import config from '../../config/index';
 
 // UserFullName Schema
 const userFullNameSchema = new Schema<TUserFullName>({
@@ -81,6 +83,18 @@ const userSchema = new Schema<IUser>({
     required: true,
   },
 });
+
+// Defining Mongoose Middlewares
+
+userSchema.pre('save', async function (nxt) {
+  this.password = await bcrypt.hash(
+    this.password,
+    parseInt(config?.bcrypt_salt_rounds ?? '10'),
+  );
+  nxt();
+});
+
+// -----------------------------
 
 const User = model<IUser>('User', userSchema);
 export default User;
