@@ -1,31 +1,31 @@
 export type TUserFullName = {
-	firstName: string;
-	lastName: string;
-}
+  firstName: string;
+  lastName: string;
+};
 
 export type TUserAddress = {
-	street: string;
-	city: string;
-	country: string;
-}
+  street: string;
+  city: string;
+  country: string;
+};
 
 export type TUserOrder = {
-	productName: string;
-	price: number;
-	quantity: number;
-}
+  productName: string;
+  price: number;
+  quantity: number;
+};
 
 export interface IUser {
-	userId: string;
-	username: string;
-	password: string;
-	fullName: TUserFullName;
+  userId: number;
+  username: string;
+  password: string;
+  fullName: TUserFullName;
 
-	age: number;
-	email: string;
-	isActive: boolean;
-	hobbies: string[];
-	address: TUserAddress;
+  age: number;
+  email: string;
+  isActive: boolean;
+  hobbies: string[];
+  address: TUserAddress;
 
-	orders: TUserOrder[];
+  orders: TUserOrder[];
 }

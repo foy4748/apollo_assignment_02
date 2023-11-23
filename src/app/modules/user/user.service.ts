@@ -6,4 +6,9 @@ const SgetAllUsers = async () => {
   return allUsers;
 };
 
-export { SgetAllUsers };
+const SpostSingleUser = async (validatedData: IUser) => {
+  const response = await UserModel.create(validatedData);
+  return response;
+};
+
+export { SgetAllUsers, SpostSingleUser };
