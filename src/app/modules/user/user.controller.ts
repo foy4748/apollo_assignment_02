@@ -304,13 +304,17 @@ export const putSingleUserSingleOrder = async (
   try {
     const { userId } = req.params;
     const zodValidatedData = userOrderValidationSchema.parse(req.body);
-    await SputSingleUserSingleOrder(userId, zodValidatedData);
-    const resObj: TresObj = {
-      success: true,
-      message: 'Order created successfully!',
-      data: null,
-    };
-    res.send(resObj);
+    const isUpdated = await SputSingleUserSingleOrder(userId, zodValidatedData);
+    if (isUpdated) {
+      const resObj: TresObj = {
+        success: true,
+        message: 'Order created successfully!',
+        data: null,
+      };
+      res.send(resObj);
+    } else {
+      res.send(UserDoesnotExist());
+    }
   } catch (error) {
     const errorObj: TerrorObj = {
       success: false,
