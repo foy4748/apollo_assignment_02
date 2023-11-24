@@ -137,7 +137,7 @@ const SputSingleUserSingleOrder = async (
     const addedData = await UserModel.updateOne(
       { userId: Number(slug) },
       {
-        $addToSet: zodValidatedData,
+        $addToSet: { orders: zodValidatedData },
       },
       {
         new: true,
