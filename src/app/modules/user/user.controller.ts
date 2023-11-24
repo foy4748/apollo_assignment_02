@@ -30,6 +30,19 @@ type TresObj = {
   data: object | object[] | null;
 };
 
+const UserDoesnotExist = (slug: string): TerrorObj => {
+  const errorObj: TerrorObj = {
+    success: false,
+    message: `User with slug ${slug} doesn't exist`,
+    error: {
+      code: 404,
+      description: `User with slug ${slug} doesn't exist`,
+    },
+  };
+
+  return errorObj;
+};
+
 export const errorHandler = async (
   error: Partial<TerrorObj>,
   _: Request,
@@ -125,15 +138,7 @@ export const getSingleUser = async (
       };
       return res.json(resObj);
     } else {
-      const errorObj: TerrorObj = {
-        success: false,
-        message: `NO user found using provided slug: ${userId}`,
-        error: {
-          code: 404,
-          description: `NO user found using provided slug: ${userId}`,
-        },
-      };
-      return res.json(errorObj);
+      return res.json(UserDoesnotExist(userId));
     }
   } catch (error: unknown) {
     const errorObj: TerrorObj = {
@@ -164,15 +169,7 @@ export const deleteSingleUser = async (
       };
       return res.json(resObj);
     } else {
-      const errorObj: TerrorObj = {
-        success: false,
-        message: `User with slug ${userId} doesn't exists`,
-        error: {
-          code: 404,
-          description: `User with slug ${userId} doesn't exists`,
-        },
-      };
-      next(errorObj);
+      next(UserDoesnotExist(userId));
     }
   } catch (error: unknown) {
     const errorObj: TerrorObj = {
@@ -204,15 +201,7 @@ export const putSingleUser = async (
       };
       return res.json(resObj);
     } else {
-      const errorObj: TerrorObj = {
-        success: false,
-        message: `User with slug ${userId} doesn't exists`,
-        error: {
-          code: 404,
-          description: `User with slug ${userId} doesn't exists`,
-        },
-      };
-      next(errorObj);
+      next(UserDoesnotExist(userId));
     }
   } catch (error: unknown) {
     const errorObj: TerrorObj = {
@@ -245,15 +234,7 @@ export const getAllUserOrders = async (
       };
       return res.json(resObj);
     } else {
-      const errorObj: TerrorObj = {
-        success: false,
-        message: `User with slug ${userId} doesn't exists`,
-        error: {
-          code: 404,
-          description: `User with slug ${userId} doesn't exists`,
-        },
-      };
-      next(errorObj);
+      next(UserDoesnotExist(userId));
     }
   } catch (error) {
     const errorObj: TerrorObj = {
