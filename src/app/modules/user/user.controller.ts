@@ -95,10 +95,11 @@ export const postSingleUser = async (
       },
     };
     res.send(resObj);
-  } catch (error: unknown) {
+    // eslint-disable-next-line
+  } catch (error: any) {
     const errorObj: TerrorObj = {
       success: false,
-      message: 'FAILED to POST Single User Data.',
+      message: error?.message ?? 'FAILED to POST Single User Data.',
       error: {
         code: 501,
         description: 'FAILED to POST Single User Data.',
