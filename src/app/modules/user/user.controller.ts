@@ -10,6 +10,7 @@ import {
   SgetAllUserOrdersSum,
   SputSingleUserSingleOrder,
 } from './user.service';
+
 import userValidationSchema, {
   userOrderValidationSchema,
 } from './user.validation';
@@ -29,7 +30,7 @@ type TresObj = {
   data: object | object[] | null;
 };
 
-const errorHandler = async (
+export const errorHandler = async (
   error: Partial<TerrorObj>,
   _: Request,
   res: Response,
@@ -38,7 +39,11 @@ const errorHandler = async (
   return res.send(error);
 };
 
-const getAllUsers = async (_: Request, res: Response, next: NextFunction) => {
+export const getAllUsers = async (
+  _: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const users: IUser[] = await SgetAllUsers();
     res.json(users);
@@ -55,7 +60,7 @@ const getAllUsers = async (_: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const postSingleUser = async (
+export const postSingleUser = async (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -91,7 +96,6 @@ const postSingleUser = async (
     };
     res.send(resObj);
   } catch (error: unknown) {
-    console.log(error);
     const errorObj: TerrorObj = {
       success: false,
       message: 'FAILED to POST Single User Data.',
@@ -104,7 +108,7 @@ const postSingleUser = async (
   }
 };
 
-const getSingleUser = async (
+export const getSingleUser = async (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -143,7 +147,7 @@ const getSingleUser = async (
   }
 };
 
-const deleteSingleUser = async (
+export const deleteSingleUser = async (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -182,7 +186,7 @@ const deleteSingleUser = async (
   }
 };
 
-const putSingleUser = async (
+export const putSingleUser = async (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -224,7 +228,7 @@ const putSingleUser = async (
 
 // Bonus Part ==========================================
 // =========== Bonus Part 2
-const getAllUserOrders = async (
+export const getAllUserOrders = async (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -264,7 +268,7 @@ const getAllUserOrders = async (
 };
 
 // =========== Bonus Part 3
-const getAllUserOrdersSum = async (
+export const getAllUserOrdersSum = async (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -305,7 +309,7 @@ const getAllUserOrdersSum = async (
 };
 
 // =========== Bonus Part 1
-const putSingleUserSingleOrder = async (
+export const putSingleUserSingleOrder = async (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -331,16 +335,4 @@ const putSingleUserSingleOrder = async (
     };
     next(errorObj);
   }
-};
-
-export {
-  getAllUsers,
-  getAllUserOrders,
-  getAllUserOrdersSum,
-  postSingleUser,
-  putSingleUser,
-  putSingleUserSingleOrder,
-  getSingleUser,
-  deleteSingleUser,
-  errorHandler,
 };

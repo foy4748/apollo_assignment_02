@@ -3,17 +3,17 @@ import config from '../../config/index';
 import { IUser, TUserOrder } from './user.interface';
 import UserModel from './user.model';
 
-const SgetAllUsers = async () => {
+export const SgetAllUsers = async () => {
   const allUsers: IUser[] = await UserModel.find({});
   return allUsers;
 };
 
-const SpostSingleUser = async (validatedData: IUser) => {
+export const SpostSingleUser = async (validatedData: IUser) => {
   const response = await UserModel.create(validatedData);
   return response;
 };
 
-const SgetSingleUser = async (slug: string) => {
+export const SgetSingleUser = async (slug: string) => {
   const isUserExists = await UserModel.isIdExists(slug);
   if (isUserExists) {
     const singleUser: IUser | null = await UserModel.findOne(
@@ -36,7 +36,7 @@ const SgetSingleUser = async (slug: string) => {
   }
 };
 
-const SdeleteSingleUser = async (slug: string) => {
+export const SdeleteSingleUser = async (slug: string) => {
   const isIdExists = await UserModel.isIdExists(slug);
   if (isIdExists) {
     const deleteResponse = await UserModel.deleteOne({ userId: slug });
@@ -46,7 +46,7 @@ const SdeleteSingleUser = async (slug: string) => {
   }
 };
 
-const SputSingleUser = async (
+export const SputSingleUser = async (
   slug: string,
   validatedUpdatedDoc: Partial<IUser>,
 ) => {
@@ -81,7 +81,7 @@ const SputSingleUser = async (
   }
 };
 
-const SgetAllUserOrders = async (slug: string) => {
+export const SgetAllUserOrders = async (slug: string) => {
   const isUserExists = await UserModel.isIdExists(slug);
   if (isUserExists) {
     const orders = await UserModel.findOne(
@@ -93,7 +93,8 @@ const SgetAllUserOrders = async (slug: string) => {
     return false;
   }
 };
-const SgetAllUserOrdersSum = async (slug: string) => {
+
+export const SgetAllUserOrdersSum = async (slug: string) => {
   const isUserExists = await UserModel.isIdExists(slug);
   if (isUserExists) {
     const sum = await UserModel.aggregate([
@@ -128,7 +129,7 @@ const SgetAllUserOrdersSum = async (slug: string) => {
   }
 };
 
-const SputSingleUserSingleOrder = async (
+export const SputSingleUserSingleOrder = async (
   slug: string,
   zodValidatedData: TUserOrder,
 ) => {
@@ -147,15 +148,4 @@ const SputSingleUserSingleOrder = async (
   } else {
     return false;
   }
-};
-
-export {
-  SgetAllUsers,
-  SpostSingleUser,
-  SgetSingleUser,
-  SdeleteSingleUser,
-  SputSingleUser,
-  SputSingleUserSingleOrder,
-  SgetAllUserOrders,
-  SgetAllUserOrdersSum,
 };
