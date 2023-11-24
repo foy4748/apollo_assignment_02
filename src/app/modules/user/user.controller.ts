@@ -119,8 +119,9 @@ export const postSingleUser = async (
       success: false,
       message: error?.message ?? 'FAILED to POST Single User Data.',
       error: {
-        code: 501,
-        description: 'FAILED to POST Single User Data.',
+        code: 403,
+        description:
+          'FORBIDDEN to POST Single User with duplicate userId or username.',
       },
     };
     next(errorObj);
@@ -213,8 +214,9 @@ export const putSingleUser = async (
       success: false,
       message: 'FAILED to UPDATE Single User',
       error: {
-        code: 501,
-        description: 'FAILED to UPDATE Single User Data.',
+        code: 403,
+        description:
+          'FORBIDDEN to PUT Updated Single User with duplicate userId or username.',
       },
     };
     next(errorObj);
