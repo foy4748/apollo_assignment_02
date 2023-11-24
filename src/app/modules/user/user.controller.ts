@@ -264,7 +264,7 @@ export const getAllUserOrdersSum = async (
     const { userId } = req.params;
     const sum = await SgetAllUserOrdersSum(userId);
     if (typeof sum == 'boolean' && !sum) {
-      res.send({ error: true });
+      return res.send(UserDoesnotExist());
     } else if (Object.keys(sum).length == 0) {
       const resObj: TresObj = {
         success: true,
