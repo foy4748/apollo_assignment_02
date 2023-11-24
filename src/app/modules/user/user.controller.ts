@@ -30,13 +30,13 @@ type TresObj = {
   data: object | object[] | null;
 };
 
-const UserDoesnotExist = (slug: string): TerrorObj => {
+const UserDoesnotExist = (): TerrorObj => {
   const errorObj: TerrorObj = {
     success: false,
-    message: `User with slug ${slug} doesn't exist`,
+    message: 'User not found',
     error: {
       code: 404,
-      description: `User with slug ${slug} doesn't exist`,
+      description: 'User not found',
     },
   };
 
@@ -59,7 +59,12 @@ export const getAllUsers = async (
 ) => {
   try {
     const users: IUser[] = await SgetAllUsers();
-    res.json(users);
+    const resObj: TresObj = {
+      success: true,
+      message: 'Users fetched successfully!',
+      data: users,
+    };
+    res.json(resObj);
   } catch (error: unknown) {
     const errorObj: TerrorObj = {
       success: false,
@@ -138,7 +143,7 @@ export const getSingleUser = async (
       };
       return res.json(resObj);
     } else {
-      return res.json(UserDoesnotExist(userId));
+      return res.json(UserDoesnotExist());
     }
   } catch (error: unknown) {
     const errorObj: TerrorObj = {
@@ -169,7 +174,7 @@ export const deleteSingleUser = async (
       };
       return res.json(resObj);
     } else {
-      next(UserDoesnotExist(userId));
+      next(UserDoesnotExist());
     }
   } catch (error: unknown) {
     const errorObj: TerrorObj = {
@@ -201,7 +206,7 @@ export const putSingleUser = async (
       };
       return res.json(resObj);
     } else {
-      next(UserDoesnotExist(userId));
+      next(UserDoesnotExist());
     }
   } catch (error: unknown) {
     const errorObj: TerrorObj = {
@@ -234,7 +239,7 @@ export const getAllUserOrders = async (
       };
       return res.json(resObj);
     } else {
-      next(UserDoesnotExist(userId));
+      next(UserDoesnotExist());
     }
   } catch (error) {
     const errorObj: TerrorObj = {
